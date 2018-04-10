@@ -6,9 +6,10 @@ var logger = log4js.getLogger();
 logger.level = 'info';
 
 if (typeof web3 != 'undefined') {
+  console.log("web3 is undefined")
   web3 = new Web3.currentProvider();
 } else {
-  web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:11111'))
+  web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:22222'))
 }
 
 var base = "0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1";

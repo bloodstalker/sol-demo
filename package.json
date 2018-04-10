@@ -2,7 +2,6 @@
   "name": "sol-demo",
   "version": "1.0.0",
   "description": "",
-  "main": "test.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,14 +10,16 @@
     "url": "git+https://github.com/bloodstalker/sol-demo.git"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "bloodstalker",
+  "license": "GPLv3",
   "bugs": {
     "url": "https://github.com/bloodstalker/sol-demo/issues"
   },
   "homepage": "https://github.com/bloodstalker/sol-demo#readme",
   "dependencies": {
     "log4js": "",
-    "web3": ""
+    "web3": "^1.0.0-beta.18",
+    "colors": "",
+    "solc": "^0.4.21"
   }
 }

@@ -1,4 +1,4 @@
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.21;
 
 contract SimpleStorage {
   uint StoreData;
@@ -7,32 +7,32 @@ contract SimpleStorage {
 
   event Sent(address from, address to, uint amount);
 
-  function SimpleStorage(address minter, uint data) {
+  function SimpleStorage(uint data) public {
     StoreData = data;
     minter = msg.sender;
   }
 
-  function mint(address receiver, uint amount) {
+  function mint(address receiver, uint amount) private {
     if (msg.sender != minter) return;
     balances[receiver]+= amount;
   }
 
-  function getBalance(address add) returns (uint) {
+  function getBalance(address add) view public returns (uint) {
     return balances[add];
   }
 
-  function send(address receiver, uint amount) {
+  function send(address receiver, uint amount) public {
     if (balances[msg.sender] < amount) return;
     balances[msg.sender] -= amount;
     balances[receiver] += amount;
-    Sent(msg.sender, receiver, amount);
+    emit Sent(msg.sender, receiver, amount);
   }
 
-  function set(uint x) constant {
+  function set(uint x) private {
     StoreData = x;
   }
 
-  function get() constant returns (uint) {
+  function get() public constant returns (uint) {
     return StoreData;
   }
 }

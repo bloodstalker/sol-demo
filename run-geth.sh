@@ -1,5 +1,5 @@
 #!/bin/bash
-cd $(dirname $0)
+#cd $(dirname $0)
 
 function check_node_version() {
   MIN_VERSION="7.6.0"
@@ -15,14 +15,14 @@ function check_node_version() {
 
 NODE_VERSION=$(node --version)
 check_node_version $NODE_VERSION
+
+# if geth attach returns with permission denied, change the location of the geth.ipc file
 if [[ $? == 1 ]]; then echo "node version is too old. please use v.7.6.0 or newer." && exit 1; fi
 echo "node version is new enough!"
 
-ganache-cli -p 11111 -d /dev/null 2>&1 &
-G_PID=$!
-echo "ganache-cli pid "$G_PID
-
-"solc" --overwrite --abi --optimize --bin --ast --asm ./contracts/*.sol -o ./bin
-
-"node" test.js
-"kill" -9 $G_PID
+geth --ipcpath /tmp/ethereum_dev_mode/geth.ipc --verbosity 6 --dev --rpc --rpcapi admin,miner,eth,net,web3,personal --rpcaddr "localhost" --rpcport "8545" --port "30303" --datadir /tmp/ethereum_dev_mode &>/dev/null &
+GETH_PID=$!
+sleep 5
+"geth" --exec 'loadScript("./test/gethconfig.js")' attach ipc://tmp/ethereum_dev_mode/geth.ipc
+"node" ./test/index.js
+kill -9 $GETH_PID
