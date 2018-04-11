@@ -1,6 +1,7 @@
 var log4js = require('./node_modules/log4js')
 var Web3 = require('./node_modules/web3')
 var fs = require("fs")
+var color = require("colors")
 
 var logger = log4js.getLogger();
 logger.level = 'info';
@@ -14,30 +15,34 @@ if (typeof web3 != 'undefined') {
 
 var base = "0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1";
 
-web3.eth.personal.getAccounts().then(function (c) {
-  console.log(c);
-});
-
-
-var code = fs.readFileSync("./bin/SimpleStorage.bin");
-var abi = JSON.parse(fs.readFileSync("./bin/SimpleStorage.abi"));
+var code = fs.readFileSync("./bin/PopCnt.bin");
+var abi = JSON.parse(fs.readFileSync("./bin/PopCnt.abi"));
 var sol_testcontract = new web3.eth.Contract(abi);
 var send_opt = {from:base, gas : 4000000}
 
+// this was the thing missing
+var popcnt_testcontract = new web3.eth.Contract(abi);
 
-function test1(c) {
-  var input = 123456789;
-  c.methods.set(input).send(send_opt).then(() => c.methods.get().call().then(res => logger.info(res)));
+function popcnttest(c) {
+  var in1 = 1024;
+  var in2 = 0xffffff;
+
+  c.methods.popcnt32(in1).call().then(res => logger.info(res));
+  c.methods.popcnt64(in2).call().then(res => logger.info(res));
+  c.methods.clz32(in1).call().then(res => logger.info(res));
+  c.methods.clz64(in2).call().then(res => logger.info(res));
+  c.methods.ctz32(in1).call().then(res => logger.info(res));
+  c.methods.ctz64(in2).call().then(res => logger.info(res));
 }
 
-function test(con, test_con) {
-  test_con.deploy({data:code, arguments:[base, 987654321]}).send(send_opt).then(
+function popcnt_deploy(con) {
+  popcnt_testcontract.deploy({data:code}).send(send_opt).then(
     contract => {
-      logger.info('test contract mined.');
+      logger.info('contract mined.');
       con(contract)
-      logger.info("test contract finished.")
+      logger.info("contract finished.")
     }
   )
 }
 
-test(test1, sol_testcontract);
+popcnt_deploy(popcnttest);
