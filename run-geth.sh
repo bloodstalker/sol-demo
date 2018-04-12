@@ -1,5 +1,5 @@
 #!/bin/bash
-#cd $(dirname $0)
+cd $(dirname $0)
 
 function check_node_version() {
   MIN_VERSION="7.6.0"
@@ -22,6 +22,7 @@ echo "node version is new enough!"
 
 geth --ipcpath /tmp/ethereum_dev_mode/geth.ipc --verbosity 6 --dev --rpc --rpcapi admin,miner,eth,net,web3,personal --rpcaddr "localhost" --rpcport "8545" --port "30303" --datadir /tmp/ethereum_dev_mode &>/dev/null &
 GETH_PID=$!
+echo "geth pid "$GETH_PID
 sleep 5
 "geth" --exec 'loadScript("./test/gethconfig.js")' attach ipc://tmp/ethereum_dev_mode/geth.ipc
 "node" ./test/index.js

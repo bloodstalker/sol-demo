@@ -5,7 +5,7 @@ const process = require('process')
 const color = require('colors')
 const child_process = require('child_process')
 
-const useLocalSolc = false
+const useLocalSolc = true
 
 function invokeCompiler(input) {
     if (useLocalSolc) {
@@ -50,19 +50,18 @@ function compile() {
     const compilerInput = {
         'language': 'Solidity',
         'sources': {
-            'simpleStorage.sol': {'content': readFile('contracts/simpleStorage.sol')}
+            'popcnt.sol': {'content': readFile('contracts/popcnt.sol')}
         }
     }
 
     var res = invokeCompiler(JSON.stringify(compilerInput))
-    console.log(res.red)
+    console.log(res.green)
     var results = JSON.parse(invokeCompiler(JSON.stringify(compilerInput)))
-    console.log(results)
     checkForErrors(results)
-    Code = '0x' + results['contracts']['simpleStorage.sol']['SimpleStorage']['object']
-    console.log(Code)
-    ABI = results['contracts']['simpleStorage.sol']['SimpleStorage']['abi']
-    console.log(ABI)
+    Code = '0x' + results['contracts']['popcnt.sol']['PopCnt']['evm']['bytecode']['object']
+    console.log(Code.blue)
+    ABI = results['contracts']['popcnt.sol']['PopCnt']['abi']
+    console.log(("ABI is", ABI).blue)
 }
 
 console.log("Compiling contracts...".green)
@@ -102,8 +101,23 @@ async function deployContract(c_code, c_abi, c_addr, b_account, c_gas, bool_log)
 }
 
 async function test() {
-  var account = await setupAccount(_account)
-  var ss = await deployContract(Code, ABI, contractAddr, account, 4000000, true)
+  var account = await setupAccount()
+  var c = await deployContract(Code, ABI, contractAddr, account, 4000000, true)
+  var in1 = 1024;
+  var in2 = 0xffffff;
+
+  var ret = await c.methods.popcnt32(in1).call({from:account})
+  console.log(("popcnt32 returned ", ret).red)
+  ret = await c.methods.popcnt64(in2).call({from:account})
+  console.log(ret.red)
+  ret = await c.methods.clz32(in1).call({from:account})
+  console.log(ret.red)
+  ret = await c.methods.clz64(in2).call({from:account})
+  console.log(ret.red)
+  ret = await c.methods.ctz32(in1).call({from:account})
+  console.log(ret.red)
+  ret = await c.methods.ctz64(in2).call({from:account})
+  console.log(ret.red)
 }
 
 var anyError = false

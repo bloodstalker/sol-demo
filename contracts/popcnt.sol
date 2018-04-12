@@ -1,7 +1,7 @@
 pragma solidity ^0.4.0;
 
 contract PopCnt {
-  function popcnt32(uint32 r1) returns (uint8) {
+  function popcnt32(uint32 r1) public pure returns (uint8) {
     uint32 temp = r1;
     temp = (temp & 0x55555555) + ((temp >> 1) & 0x55555555);
     temp = (temp & 0x33333333) + ((temp >> 2) & 0x33333333);
@@ -11,7 +11,7 @@ contract PopCnt {
     return uint8(temp);
   }
 
-  function popcnt64(uint64 r1) returns (uint8) {
+  function popcnt64(uint64 r1) public pure returns (uint8) {
     uint64 temp = r1;
     temp = (temp & 0x5555555555555555) + ((temp >> 1) & 0x5555555555555555);
     temp = (temp & 0x3333333333333333) + ((temp >> 2) & 0x3333333333333333);
@@ -22,7 +22,7 @@ contract PopCnt {
     return uint8(temp);
   }
 
-  function clz32(uint32 r1) returns (uint8) {
+  function clz32(uint32 r1) public pure returns (uint8) {
     if (r1 == 0) return 32;
     uint32 temp_r1 = r1;
     uint8 n = 0;
@@ -48,7 +48,7 @@ contract PopCnt {
     return n;
   }
 
-  function clz64(uint64 r1) returns (uint8) {
+  function clz64(uint64 r1) public pure returns (uint8) {
     if (r1 == 0) return 64;
     uint64 temp_r1 = r1;
     uint8 n = 0;
@@ -78,7 +78,7 @@ contract PopCnt {
     return n;
   }
 
-  function ctz32(uint32 r1) returns (uint8) {
+  function ctz32(uint32 r1) public pure returns (uint8) {
     if (r1 == 0) return 32;
     uint32 temp_r1 = r1;
     uint8 n = 0;
@@ -104,7 +104,7 @@ contract PopCnt {
     return n;
   }
 
-  function ctz64(uint64 r1) returns (uint8) {
+  function ctz64(uint64 r1) public pure returns (uint8) {
     if (r1 == 0) return 64;
     uint64 temp_r1 = r1;
     uint8 n = 0;
